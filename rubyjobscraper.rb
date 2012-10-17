@@ -25,8 +25,11 @@ def parse_jobs(links, url = "http://careers.stackoverflow.com")
 		job_page = Nokogiri::HTML(open(url+link))
 	#Parse the page for contents
 		job_title = job_page.css('h1#title').text
+		job_array = job_page.css('div.description p').text.split("</p>")[0]
+
+
 		job_url = url + link
-		puts job_title
+		raise job_array.inspect
 		end
 end
 #select all tabs
