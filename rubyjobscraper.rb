@@ -1,27 +1,9 @@
-#search for jobs
-	#open individual jobs on page
-	#parse jobs_page for 
-		##Job Title
-		##Job_description
-		##Responsiblities
-		##Skill& Requirements
-		##About the Company
-
-		##REPEAT
 require 'nokogiri'
 require 'rubygems'
 require 'open-uri'
 require 'sqlite3'
-###Select all job names. If the strings match exactly, skip the database insertion.
-# def look for duplicate
-@db = SQLite3::Database.open("jobs.db")
-# @db.execute("CREATE TABLE jobs ()
-# 	id INTEGER PRIMARY KEY,
-# 	title TEXT,
-# 	description TEXT,	
-# 	url TEXT
-# );")
 
+@db = SQLite3::Database.open("jobs.db")
 
 def found_duplicates?(job_link)
 	job_in_db = @db.execute("SELECT url FROM jobs WHERE url = ?", job_link)
@@ -34,12 +16,12 @@ end
 
 
 url= "http://careers.stackoverflow.com"
-#handle inserts
+
 def insert_job(title, description, url)
 	@db.execute("INSERT INTO jobs(title, description, url)
 			VALUES(?, ?, ?)", title, description, url)
 end
-# Open individual jobs' pages
+
 def parse_jobs(links, url)
 	links.each do |link|
 		job_url = url + link
@@ -60,12 +42,10 @@ search_page = "http://careers.stackoverflow.com/jobs?searchTerm=#{job}&location=
 
 search_results = Nokogiri::HTML(open(search_page))
 
-#Put links to job pages into an Array
 jobs_array = search_results.css('a.title').map { |n| n['href'] }
 
 parse_jobs(jobs_array, url)
 
-# Open the next page from index page and assign it to current page 
 
 next_page_extension = search_results.css('div.pagination a.prev-next')
 if next_page_extension.length > 0 
