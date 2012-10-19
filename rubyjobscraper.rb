@@ -18,16 +18,14 @@ require 'sqlite3'
 
 
 
-# def found_duplicates?(url)
-# 	jobs_in_db = @db.execute("SELECT url FROM jobs ")
-# 	jobs_in_db.each do |job|
-# 		if url == job
-# 			true
-# 		else
-# 			false
-# 		end
-# 	end
-# end
+def found_duplicates(job_link)
+	job_in_db = @db.execute("SELECT * FROM jobs WHERE url = #{job_link} ")
+	if job_link == job_in_db
+		true
+	else
+		false
+	end
+end
 
 
 # @db.execute("CREATE TABLE jobs (
@@ -45,15 +43,15 @@ end
 # Open individual jobs' pages
 def parse_jobs(links, url)
 	links.each do |link|
-		# if found_duplicates?(link)
-		# 	next
-		# else
+		job_url = url + link
+		if found_duplicates(job_url)
+			next
+		else
 			job_page = Nokogiri::HTML(open(url+link))
-			job_url = url + link
 			job_title = job_page.css('h1#title').text
 			job_description = job_page.css('div.description p').text
 			insert_job(job_title, job_description, job_url)
-		# end
+		end
 	end
 end
 
