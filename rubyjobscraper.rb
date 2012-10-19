@@ -12,10 +12,23 @@ require 'nokogiri'
 require 'rubygems'
 require 'open-uri'
 require 'sqlite3'
-
-
-
+###Select all job names. If the strings match exactly, skip the database insertion.
+# def look for duplicate
 @db = SQLite3::Database.open("jobs.db")
+
+
+
+# def found_duplicates?(url)
+# 	jobs_in_db = @db.execute("SELECT url FROM jobs ")
+# 	jobs_in_db.each do |job|
+# 		if url == job
+# 			true
+# 		else
+# 			false
+# 		end
+# 	end
+# end
+
 
 # @db.execute("CREATE TABLE jobs (
 # 	id INTEGER PRIMARY KEY,
@@ -32,12 +45,16 @@ end
 # Open individual jobs' pages
 def parse_jobs(links, url)
 	links.each do |link|
-		job_page = Nokogiri::HTML(open(url+link))
-		job_title = job_page.css('h1#title').text
-		job_description = job_page.css('div.description p').text
-		job_url = url + link
-		insert_job(job_title, job_description, job_url)
-		end
+		# if found_duplicates?(link)
+		# 	next
+		# else
+			job_page = Nokogiri::HTML(open(url+link))
+			job_url = url + link
+			job_title = job_page.css('h1#title').text
+			job_description = job_page.css('div.description p').text
+			insert_job(job_title, job_description, job_url)
+		# end
+	end
 end
 
 puts "What type of job do you want to search for?"
