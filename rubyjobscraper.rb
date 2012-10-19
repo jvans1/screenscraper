@@ -5,7 +5,7 @@ require 'sqlite3'
 
 @db = SQLite3::Database.open("jobs.db")
 
-def found_duplicates?(job_link)
+def check_duplicates?(job_link)
 	job_in_db = @db.execute("SELECT url FROM jobs WHERE url = ?", job_link)
 	if job_link == job_in_db.flatten[0].to_s
 		true
@@ -25,7 +25,7 @@ end
 def parse_jobs(links, url)
 	links.each do |link|
 		job_url = url + link
-		if found_duplicates?(job_url)
+		if check_duplicates?(job_url)
 			next
 		else
 			job_page = Nokogiri::HTML(open(url+link))
