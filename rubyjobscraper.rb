@@ -19,16 +19,19 @@ require 'sqlite3'
 
 
 def found_duplicates(job_link)
+	puts 'hello'
 	job_in_db = @db.execute("SELECT * FROM jobs WHERE url = #{job_link} ")
-	if job_link == job_in_db
-		true
-	else
-		false
-	end
+	puts job_in_db.inspect
+	# job_in_db.each do |job|
+	# 	if job_link == job
+	# 		puts job
+	# 	else
+	# 		false
+	# 	end
+	# end
 end
 
-
-# @db.execute("CREATE TABLE jobs (
+# @db.execute("CREATE TABLE jobs ()
 # 	id INTEGER PRIMARY KEY,
 # 	title TEXT,
 # 	description TEXT,	
