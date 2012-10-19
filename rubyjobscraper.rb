@@ -15,28 +15,24 @@ require 'sqlite3'
 ###Select all job names. If the strings match exactly, skip the database insertion.
 # def look for duplicate
 @db = SQLite3::Database.open("jobs.db")
-
-
-
-def found_duplicates(job_link)
-	puts 'hello'
-	job_in_db = @db.execute("SELECT * FROM jobs WHERE url = #{job_link} ")
-	puts job_in_db.inspect
-	# job_in_db.each do |job|
-	# 	if job_link == job
-	# 		puts job
-	# 	else
-	# 		false
-	# 	end
-	# end
-end
-
 # @db.execute("CREATE TABLE jobs ()
 # 	id INTEGER PRIMARY KEY,
 # 	title TEXT,
 # 	description TEXT,	
 # 	url TEXT
 # );")
+
+
+def found_duplicates?(job_link)
+	job_in_db = @db.execute("SELECT url FROM jobs WHERE url = ?", job_link)
+	if job_link == job_in_db.flatten[0].to_s
+		true
+	else
+		false
+	end
+end
+
+
 url= "http://careers.stackoverflow.com"
 #handle inserts
 def insert_job(title, description, url)
@@ -47,7 +43,7 @@ end
 def parse_jobs(links, url)
 	links.each do |link|
 		job_url = url + link
-		if found_duplicates(job_url)
+		if found_duplicates?(job_url)
 			next
 		else
 			job_page = Nokogiri::HTML(open(url+link))
